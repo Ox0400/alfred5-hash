@@ -3,11 +3,12 @@
 
 // Library autoloader
 define('ROOT', dirname($_SERVER['SCRIPT_NAME']).'/');
-function __autoload($className)
+function custom_autoload($className)
 {
 	include ROOT.'libs/'.$className.'.php';
 }
 
+spl_autoload_register('custom_autoload');
 
 // Loading application config
 $app = new e4WorkflowApp(ROOT);
@@ -45,15 +46,15 @@ class e4WorkflowApp
 		// Loading app informations
 		$this->setName($e4Config['app']['name'], $e4Config['app']['id']);
 		$this->setVersion($e4Config['app']['version']);
-		$this->setCacheTTL($e4Config['app']['cacheTTL']);
+		$this->setCacheTTL($e4Config['app']['cacheTTL'] ?? 3600);
 
 		// Loading default configuration
-		if (count($e4Config['defaults']) > 0)
+		if (count($e4Config['defaults'] ?? []) > 0)
 			foreach ($e4Config['defaults'] AS $key => $value)
 				$this->addDefault($key, $value);
 
 		// Loading app commands
-		if (count($e4Config['commands']) > 0)
+		if (count($e4Config['commands'] ?? []) > 0)
 			foreach ($e4Config['commands'] AS $info)
 				$this->addCommand($info['id'], $info);
 
@@ -82,9 +83,9 @@ class e4WorkflowApp
 	}
 	public function addCommand($key, $configs)
 	{
-		$configs['icon'] = $configs['icon'] ?: 'icon.png';
-		$configs['valid'] = $configs['valid'] ? 'yes' : 'no';
-		if ($configs['default'] === true)
+		$configs['icon'] = $configs['icon'] ?? 'icon.png';
+		$configs['valid'] = $configs['valid'] ?? 'no';
+		if ($configs['default'] ?? false === true)
 			$this->appDefaultCommand = $configs['id'];
 		$this->appCommands[$key] = $configs;
 	}
@@ -128,7 +129,7 @@ class e4WorkflowApp
 		{
 			$objItem = $xmlObject->addChild('item');
 			foreach ($rows AS $key => $value)
-				$objItem->{ $tmpTypes[$key] ?: 'addChild' }($key, $value);
+				$objItem->{ $tmpTypes[$key] ?? 'addChild' }($key, $value);
 		}
 		return $xmlObject->asXML();
 	}
@@ -209,6 +210,7 @@ class e4WorkflowApp
 
 abstract class e4WorkflowCommands
 {
+        private $app;
 	protected $inQuery = '';
 	protected $inID = '';
 	protected $inConfig = array();

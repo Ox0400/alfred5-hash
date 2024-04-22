@@ -7,7 +7,7 @@ A simple Alfred 2 hash workflow's.
 Installation
 ----------------
 
-- Download the workflow [directly](https://github.com/BigLuck/alfred2-hash/raw/master/Hash.alfredworkflow) or from [Packal](http://www.packal.org/workflow/hash).
+- Download "[Hash.alfredworkflow](https://github.com/BigLuck/alfred2-hash/raw/master/Hash.alfredworkflow)" extension.
 - Double click the downloaded "Hash.alfredworkflow" file to install.
 *Alfred 2 and Powerpack is required*
 
